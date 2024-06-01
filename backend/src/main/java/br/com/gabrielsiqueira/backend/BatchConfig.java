@@ -4,6 +4,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import io.micrometer.core.instrument.distribution.StepBucketHistogram;
 
+import java.math.BigDecimal;
+
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.JobBuilder;
@@ -58,5 +60,21 @@ public class BatchConfig {
             new Range(31,42), new Range(43,48),
             new Range(49,62), new Range(63,80)
         ).names("type", "date", "value", "cpf", "card", "hour", "storeOwner", "nameStore").targetType(CNABTransaction.class).build();
+    }
+
+    // Transformações de objetos
+    // Data, Hora e Valor devem ser normalizados de maneiras distintas aos que são obtidas diretamente do arquivo
+    // Valor já está multiplicado por 100
+    // Data está no formato yyyymmdd
+    // Hora está no formato HHmmss
+    @Bean
+    ItemProcessor<CNABTransaction, Transaction> processor(){
+        // Wither pattern 
+        return item -> {
+            var transaction = new Transaction(
+                null, item.type(), null, null, item.cpf(), item.card(), null, item.storeOwner().trim(), item.nameStore().trim()
+                ).withValue(item.value().divide(BigDecimal.valueOf(100)));
+            return transaction;
+        };
     }
 }
