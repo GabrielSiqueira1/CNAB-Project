@@ -1,14 +1,16 @@
 package br.com.gabrielsiqueira.backend;
 
 import java.math.BigDecimal;
+import java.sql.Date;
+import java.sql.Time;
 
-public record CNABTransaction (
+public record Transaction(
     Integer type,
-    String date,
+    Date date,
     BigDecimal value,
     Long cpf,
     String card,
-    String hour,
+    Time hour,
     String storeOwner,
     String nameStore){
         

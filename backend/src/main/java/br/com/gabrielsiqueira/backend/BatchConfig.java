@@ -13,8 +13,12 @@ import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.item.file.FlatFileItemReader;
+import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
+import org.springframework.batch.item.file.transform.Range;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.FileSystemResource;
 
 @Configuration // Configuração de componentes em lote
 public class BatchConfig {
@@ -41,7 +45,18 @@ public class BatchConfig {
     // Chunk é o pedaço que será processado
     // Depende da criação de tipos
     @Bean
-    Step step(ItemReader itemReader, ItemProcessor itemProcessor, ItemWriter itemWriter){
-        return new StepBuilder("step", jobRepository).chunk(1000, transactionManager).reader(itemReader).processor(itemProcessor).writer(itemWriter).build();
+    Step step(ItemReader<CNABTransaction> itemReader, ItemProcessor<CNABTransaction, Transaction> itemProcessor, ItemWriter<Transaction> itemWriter){
+        return new StepBuilder("step", jobRepository).<CNABTransaction, Transaction>chunk(1000, transactionManager).reader(itemReader).processor(itemProcessor).writer(itemWriter).build();
+    }
+
+    // Para arquivos que são sintaticamente indefinidos
+    @Bean
+    FlatFileItemReader<CNABTransaction> reader(){
+        return new FlatFileItemReaderBuilder<CNABTransaction>().name("reader").resource(new FileSystemResource("backend/files/CNAB.txt")).fixedLength().columns(
+            new Range(1,1), new Range(2,9),
+            new Range(10,19), new Range(20,30),
+            new Range(31,42), new Range(43,48),
+            new Range(49,62), new Range(63,80)
+        ).names("type", "date", "value", "cpf", "card", "hour", "storeOwner", "nameStore").targetType(CNABTransaction.class).build();
     }
 }
