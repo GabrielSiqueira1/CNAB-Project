@@ -63,7 +63,7 @@ public class BatchConfig {
             new Range(10,19), new Range(20,30),
             new Range(31,42), new Range(43,48),
             new Range(49,62), new Range(63,80)
-        ).names("type", "date", "value", "cpf", "card", "hour", "storeOwner", "nameStore").targetType(CNABTransaction.class).build();
+        ).names("tipo", "data", "valor", "cpf", "cartao", "hora", "donoLoja", "nomeLoja").targetType(CNABTransaction.class).build();
     }
 
     // Transformações de objetos
@@ -76,20 +76,21 @@ public class BatchConfig {
         // Wither pattern 
         return item -> {
             var transaction = new Transaction(
-                null, item.type(), null, null, item.cpf(), item.card(), null, item.storeOwner().trim(), item.nameStore().trim()
-                ).withValue(item.value().divide(BigDecimal.valueOf(100))).withDate(item.date()).withHour(item.hour());
+                null, item.tipo(), null, null, item.cpf(), item.cartao(), null, item.donoLoja().trim(), item.nomeLoja().trim()
+                ).withValue(item.valor().divide(BigDecimal.valueOf(100))).withDate(item.data()).withHour(item.hora());
             return transaction;
         };
     }
 
+    // Conexão do schema.sql com o Transcation.java
     @Bean
     JdbcBatchItemWriter<Transaction> writer(DataSource dataSource){
         return new JdbcBatchItemWriterBuilder<Transaction>().dataSource(dataSource).sql(
             """
-                    INSERT INTO transaction (
-                        type, date, value, cpf, card, hour, owner_store, name_store
+                    INSERT INTO TRANSACTION (
+                        tipo, data, valor, cpf, cartao, hora, dono_loja, nome_loja
                     ) VALUES (
-                        :type, :date, :value, :cpf, :card, :hour, :owner_store, :name_store
+                        :tipo, :data, :valor, :cpf, :cartao, :hora, :donoLoja, :nomeLoja
                     )
                     """).beanMapped().build();
     }

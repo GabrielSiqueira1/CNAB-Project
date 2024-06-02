@@ -3,13 +3,13 @@ package br.com.gabrielsiqueira.backend;
 import java.math.BigDecimal;
 
 public record CNABTransaction (
-    Integer type,
-    String date,
-    BigDecimal value,
+    Integer tipo,
+    String data,
+    BigDecimal valor,
     Long cpf,
-    String card,
-    String hour,
-    String storeOwner,
-    String nameStore){
+    String cartao,
+    String hora,
+    String donoLoja,
+    String nomeLoja){
         
     }

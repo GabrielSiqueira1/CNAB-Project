@@ -8,28 +8,28 @@ import java.text.SimpleDateFormat;
 
 public record Transaction(
     Long id,
-    Integer type,
-    Date date,
-    BigDecimal value,
+    Integer tipo,
+    Date data,
+    BigDecimal valor,
     Long cpf,
-    String card,
-    Time hour,
-    String storeOwner,
-    String nameStore){
+    String cartao,
+    Time hora,
+    String donoLoja,
+    String nomeLoja){
         // Centraliza possíveis alterações na variável valor
-        public Transaction withValue(BigDecimal value){
-            return new Transaction(this.id(), this.type(), this.date(), value, this.cpf(), this.card(), this.hour(), this.storeOwner(), this.nameStore());
+        public Transaction withValue(BigDecimal valor){
+            return new Transaction(this.id(), this.tipo(), this.data(), valor, this.cpf(), this.cartao(), this.hora(), this.donoLoja(), this.nomeLoja());
         }   
         public Transaction withDate(String date) throws ParseException{
             var dateFormat = new SimpleDateFormat("yyyyMMdd");
             var dateParse = dateFormat.parse(date);
 
-            return new Transaction(this.id(), this.type(), new Date(dateParse.getTime()), this.value(), this.cpf(), this.card(), this.hour(), this.storeOwner(), this.nameStore());
+            return new Transaction(this.id(), this.tipo(), new Date(dateParse.getTime()), this.valor(), this.cpf(), this.cartao(), this.hora(), this.donoLoja(), this.nomeLoja());
         }
         public Transaction withHour(String hour) throws ParseException{
             var hourFormat = new SimpleDateFormat("HHmmss");
             var hourParse = hourFormat.parse(hour);
 
-            return new Transaction(this.id(), this.type(), this.date(), this.value(), this.cpf(), this.card(), new Time(hourParse.getTime()), this.storeOwner(), this.nameStore());
+            return new Transaction(this.id(), this.tipo(), this.data(), this.valor(), this.cpf(), this.cartao(), new Time(hourParse.getTime()), this.donoLoja(), this.nomeLoja());
         }
     }
