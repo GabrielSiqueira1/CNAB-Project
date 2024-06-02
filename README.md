@@ -19,6 +19,7 @@ Como a tarefa é realizada em lotes, uma "@configuration" se torna necessário p
 Nesta "@configuration", tal qual o XML, pode-se realizar a instância de "@bean" cujo o propósito é definir um método arbitrário que retorna um chamado a ser gerenciado pelo Spring, portanto, a escrita, leitura e processamento, devem ser instanciadas com "@bean".
 
 Para a leitura, pode-se utilizar o tipo "FlatFileItemReader" pois o arquivo de extensão .txt é sintaticamente indefinido e assim, a configuração de colunas torna-se plausível.
+
 ![alt text](README-img/reader.png)
 
 O processamento converterá as Strings contidas no tipo "CNABTransaction" para os itens de "Transaction" que são os mesmos que constam no banco de dados.
