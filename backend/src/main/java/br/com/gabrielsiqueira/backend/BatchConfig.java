@@ -6,6 +6,8 @@ import io.micrometer.core.instrument.distribution.StepBucketHistogram;
 
 import java.math.BigDecimal;
 
+import javax.sql.DataSource;
+
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.JobBuilder;
@@ -15,6 +17,8 @@ import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.item.database.JdbcBatchItemWriter;
+import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.batch.item.file.transform.Range;
@@ -73,8 +77,20 @@ public class BatchConfig {
         return item -> {
             var transaction = new Transaction(
                 null, item.type(), null, null, item.cpf(), item.card(), null, item.storeOwner().trim(), item.nameStore().trim()
-                ).withValue(item.value().divide(BigDecimal.valueOf(100)));
+                ).withValue(item.value().divide(BigDecimal.valueOf(100))).withDate(item.date()).withHour(item.hour());
             return transaction;
         };
+    }
+
+    @Bean
+    JdbcBatchItemWriter<Transaction> writer(DataSource dataSource){
+        return new JdbcBatchItemWriterBuilder<Transaction>().dataSource(dataSource).sql(
+            """
+                    INSERT INTO transaction (
+                        type, date, value, cpf, card, hour, owner_store, name_store
+                    ) VALUES (
+                        :type, :date, :value, :cpf, :card, :hour, :owner_store, :name_store
+                    )
+                    """).beanMapped().build();
     }
 }
