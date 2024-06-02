@@ -56,7 +56,7 @@ public class BatchConfig {
     // Para arquivos que são sintaticamente indefinidos
     @Bean
     FlatFileItemReader<CNABTransaction> reader(){
-        return new FlatFileItemReaderBuilder<CNABTransaction>().name("reader").resource(new FileSystemResource("backend/files/CNAB.txt")).fixedLength().columns(
+        return new FlatFileItemReaderBuilder<CNABTransaction>().name("reader").resource(new FileSystemResource("files/CNAB.txt")).fixedLength().columns(
             new Range(1,1), new Range(2,9),
             new Range(10,19), new Range(20,30),
             new Range(31,42), new Range(43,48),
