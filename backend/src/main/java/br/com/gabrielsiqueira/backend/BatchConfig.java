@@ -2,8 +2,6 @@ package br.com.gabrielsiqueira.backend;
 
 import org.springframework.transaction.PlatformTransactionManager;
 
-import io.micrometer.core.instrument.distribution.StepBucketHistogram;
-
 import java.math.BigDecimal;
 
 import javax.sql.DataSource;
